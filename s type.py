@@ -57,9 +57,10 @@ while line != "":
         'x25': '11001', 'x26': '11010', 'x27': '11011', 'x28': '11100', 'x29': '11101',
         'x30': '11110', 'x31': '11111'
     }
+    abi_mapping=
 
     line = list(line.split(" "))
-    sublist = list(line[1].split(','))
+    sublist = list(line[1].split(','))   #make sublist inside the 
     print(line)
     s_type = ['lw', 'addi', 'stliu', 'jalr']
     if line[0] in s_type:
@@ -73,8 +74,8 @@ while line != "":
                 k+=1
                 if (i == '('):
                     break
-            imm = inttob(int(sublist[1][0:k-1]),11)
-            rs = sublist[1][k:-2]  
+            imm = inttob(int(sublist[1][0:k-1]),11)   # error when imm out of range 
+            rs = sublist[1][k:-2]      #error
             print(sublist[1][0:k-1])
             print(rs)
             j.write(imm)
