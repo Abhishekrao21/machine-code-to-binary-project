@@ -1,4 +1,27 @@
-def inttob(n):
+# def inttob(n):
+#     if n>=0:
+#         base=2
+#         binary=""
+#         q=n
+#         while q !=0 :
+#             rem=q%2
+#             q=q//2
+#             binary=str(rem)+binary
+#         while len(binary) != 12:
+#             binary='0'+binary
+#         return binary
+#     else:
+#         n=4096+n
+#         binary=""
+#         q=n
+#         while q !=0 :
+#             rem=q%2
+#             q=q//2
+#             binary=str(rem)+binary
+#         while len(binary) != 12:
+#             binary='1'+binary
+#         return inttob(n)
+def inttob(n,size):
     if n>=0:
         base=2
         binary=""
@@ -7,20 +30,19 @@ def inttob(n):
             rem=q%2
             q=q//2
             binary=str(rem)+binary
-        while len(binary) != 12:
+        while len(binary) != size:
             binary='0'+binary
         return binary
     else:
-        n=4096+n
+        n=(2**size)+n
         binary=""
         q=n
         while q !=0 :
             rem=q%2
             q=q//2
             binary=str(rem)+binary
-        while len(binary) != 12:
-            binary='1'+binary
-        return inttob(n)
+        return binary
+
 #so we need 6 different if 1 for r type ,i type ,s type ...
 # like this for r type
 f = open("/Users/abhishekrao/Documents/vscode/python/read.txt", "r")
@@ -63,9 +85,10 @@ for line in f:
     
     if line[0] in R_type:
         if line[0] =='add':
-            rd = line[1][0:-1]
-            rs1 = line[2][0:-1]
-            rs2 = line[3][0:-1]
+            subline=list(line[1].split(","))
+            rd = subline[0]
+            rs1 = subline[1]
+            rs2 = subline[2]
             j.write('0000000')
             j.write(registers[rs2])
             j.write(registers[rs1])
@@ -74,7 +97,7 @@ for line in f:
             j.write('0110011')
             j.write('\n')
     #S-type
-    if line[0] == 'sw':
+    elif line[0] == 'sw':
         sublist=list(line[1].split(","))
         rs2=sublist[0]
         sublist=list(sublist[1].split("("))
@@ -82,7 +105,7 @@ for line in f:
         rs1=sublist[1][0:-1]
         if rs2 in abi_mapping and rs1 in abi_mapping:
             if -2048<=imm<2048:
-                imm=inttob(imm)
+                imm=inttob(imm,12)
                 rs2=abi_mapping[rs2]
                 rs1=abi_mapping[rs1]
                 print(imm)
@@ -99,13 +122,46 @@ for line in f:
         else:
             print('Error: rs1 or rs2 not found in abi_mapping', line_no)
             break
-    
+    # U type
+    elif line[0]=='lui':
+        sublist=list(line[1].split(","))
+        rd=sublist[0]
+        imm=int(sublist[1][0:-1])
+        if rd in abi_mapping:
+            rd=abi_mapping[rd]
+            if -2147483648<=imm<2147483648:
+                imm=inttob(imm,32)
+                j.write(imm[0:20])
+                j.write(rd)
+                j.write('0110111')
+                j.write('\n')
+            else:
+                print('Error: imm not in range',line_no)
+        else:
+            print("Error: rd not found",line_no)
+        
+
+    elif line[0]=='auipc':
+        sublist=list(line[1].split(","))
+        rd=sublist[0]
+        imm=int(sublist[1][0:-1])
+        if rd in abi_mapping:
+            rd=abi_mapping[rd]
+            if -2147483648<=imm<2147483648:
+                imm=inttob(imm,32)
+                j.write(imm[0:20])
+                j.write(rd)
+                j.write('0010111')
+                j.write('\n')
+            else:
+                print('Error: imm not in range',line_no)
+        else:
+            print("Error: rd not found",line_no)
     else:
         print('error not found', line_no)
         break
 if Visual_Halt==False:
     print('Error: visual halt not found')
-
 # Close the files after processing
 f.close()
 j.close()
