@@ -70,13 +70,13 @@ for line in f:
         'x30': '11110', 'x31': '11111'
     }
     abi_mapping = {
-    'zero': '00000','ra': '00001','sp': '00010','gp': '00011','t0': '00100',
-    't1': '00101','s0': '00110','fp':'00110','s1': '00111','a0': '01000',
-    'a1': '01001','a2': '01010','a3': '01011','a4': '01100','a5': '01101',
-    'a6': '01110','a7': '01111','s2': '10000','s3': '10001','s4': '10010',
-    's5': '10011','s6': '10100','s7': '10101','s8': '10110','s9': '10111',
-    's10': '11000','s11': '11001','t3': '11010','t4': '11011','t5': '11100',
-    't6': '11101','t7': '11110','t8': '11111',
+    'zero': '00000','ra': '00001','sp': '00010','gp': '00011','tp': '00100','t0':'00101',
+    't1': '00110','t2': '00111','s0':'01000','fp':'01000','s1': '01001',
+    'a0': '01010','a1': '01011','a2': '01100','a3': '01101',
+    'a4': '01110','a5': '01111','a6': '10000','a7': '10001','s2': '10010',
+    's3': '10011','s4': '10100','s5': '10101','s6': '10110','s7': '10111',
+    's8': '11000','s9': '11001','s10': '11010','s11': '11011','t3': '11100',
+    't4': '11101','t5': '11110','t6': '11111',
     }
 
     line = list(line.split(" "))
@@ -85,17 +85,170 @@ for line in f:
     
     if line[0] in R_type:
         if line[0] =='add':
-            subline=list(line[1].split(","))
-            rd = subline[0]
-            rs1 = subline[1]
-            rs2 = subline[2]
+            sublist=list(line[1].split(","))
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
             j.write('0000000')
-            j.write(registers[rs2])
-            j.write(registers[rs1])
+            j.write(abi_mapping[rs2])
+            j.write(abi_mapping[rs1])
             j.write('000')
-            j.write(registers[rd])
+            j.write(abi_mapping[rd])
             j.write('0110011')
             j.write('\n')
+
+        elif line[0]=='sub':
+            sublist=list(line[1].split(","))
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
+            j.write('0100000')
+            j.write(abi_mapping[rs2])
+            if sublist[1] in registers:
+                j.write(registers[rs1])
+            elif sublist[1] in abi_mapping:
+                j.write(abi_mapping[rs1])
+            j.write('000')
+            j.write(abi_mapping[rd])
+            j.write('0110011')
+            j.write('\n')
+
+        elif line[0]=='slt':
+            sublist=list(line[1].split(","))
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
+            j.write('0000000')
+            j.write(abi_mapping[rs2])
+            j.write(abi_mapping[rs1])
+            j.write('010')
+            j.write(abi_mapping[rd])
+            j.write('0110011')
+            j.write('\n')
+
+        elif line[0]=='sltu':
+            sublist=list(line[1].split(",")) 
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
+            j.write('0000000')
+            j.write(abi_mapping[rs2])
+            j.write(abi_mapping[rs1])
+            j.write('011')
+            j.write(abi_mapping[rd])
+            j.write('0110011')
+            j.write('\n')
+
+        elif line[0]=='xor': 
+            sublist=list(line[1].split(",")) 
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
+            j.write('0000000')
+            j.write(abi_mapping[rs2])
+            j.write(abi_mapping[rs1])
+            j.write('100')
+            j.write(abi_mapping[rd])
+            j.write('0110011')
+            j.write('\n')
+            
+        elif line[0]=='sll':
+            sublist=list(line[1].split(","))
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
+            j.write('0000000')
+            j.write(abi_mapping[rs2])
+            j.write(abi_mapping[rs1])
+            j.write('001')
+            j.write(abi_mapping[rd])
+            j.write('0110011')
+            j.write('\n')
+
+        elif line[0]=='srl':
+            sublist=list(line[1].split(","))
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
+            j.write('0000000')
+            j.write(abi_mapping[rs2])
+            j.write(abi_mapping[rs1])
+            j.write('101')
+            j.write(abi_mapping[rd])
+            j.write('0110011')
+            j.write('\n')
+
+        elif line[0]=='or':
+            sublist=list(line[1].split(","))
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
+            j.write('0000000')
+            j.write(abi_mapping[rs2])
+            j.write(abi_mapping[rs1])
+            j.write('110')
+            j.write(abi_mapping[rd])
+            j.write('0110011')
+            j.write('\n')
+
+        elif line[0]=='and':
+            sublist=list(line[1].split(","))
+            rd = sublist[0]
+            rs1 = sublist[1]
+            if sublist[2][0:-1] in abi_mapping:
+                rs2 = sublist[2][0:-1]
+            elif sublist[2] in abi_mapping:
+                rs2 = sublist[2]
+            else:
+                print("Error: reg  not found",line_no)
+            j.write('0000000')
+            j.write(abi_mapping[rs2])
+            j.write(abi_mapping[rs1])
+            j.write('111')
+            j.write(abi_mapping[rd])
+            j.write('0110011')
+            j.write('\n')
+
     #S-type
     elif line[0] == 'sw':
         sublist=list(line[1].split(","))
