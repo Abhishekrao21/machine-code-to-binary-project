@@ -31,7 +31,7 @@ for line in f:
     if line == '\n':
         continue
     if line =="beq zero,zero,0":
-        Visual_Halt==True
+        Visual_Halt=True
     registers = {
         'x0': '00000', 'x1': '00001', 'x2': '00010', 'x3': '00011', 'x4': '00100',
         'x5': '00101', 'x6': '00110', 'x7': '00111', 'x8': '01000', 'x9': '01001',
