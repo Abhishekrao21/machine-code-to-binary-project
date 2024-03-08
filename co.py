@@ -42,7 +42,7 @@ def inttob(n,size):
             q=q//2
             binary=str(rem)+binary
         return binary
-
+# Error: rs1 or rs2 not found in abi_mapping
 #so we need 6 different if 1 for r type ,i type ,s type ...
 # like this for r type
 f = open("/Users/abhishekrao/Documents/vscode/python/read.txt", "r")
@@ -54,9 +54,9 @@ for line in f:
         print('Error: Visual Halt at line',line_no)
         Visual_Halt=False
     line_no=line_no+1
-    if line == '':
+    if line == '\n':
         continue
-    if line =="beq zero,zero,0x00000000":
+    if line =="beq zero,zero,0":
         Visual_Halt==True
         continue
     # Example of a line is (sltu rd, rs1, rs2)
@@ -83,6 +83,8 @@ for line in f:
 
     #r type
     R_type = ['add', 'sub', 'sll', 'slt', 'sltu', 'xor', 'srl', 'or', 'and']
+    s_type = ['lw', 'addi', 'sltiu', 'jalr']
+    b_type = ('beq','bne','bge','bgeu','blt','bltu')
     if line[0] in R_type:
         if line[0] =='add':
             sublist=list(line[1].split(","))
@@ -251,8 +253,8 @@ for line in f:
             j.write('0110011')
             j.write('\n')
     #i type
-    s_type = ['lw', 'addi', 'stliu', 'jalr']
-    if line[0] in s_type:
+        
+    elif line[0] in s_type:
         if line[0] == 'lw':
             sublist = list(line[1].split(','))
             rd = sublist[0] 
@@ -262,9 +264,10 @@ for line in f:
                 if (i == '('):
                     break
             rs = sublist[1][k:-2]  
+            n=int(sublist[1][0:k-1])
             if n>(2**11)-1 or n<(-2**11):
                 j.write('imm out of range')
-                berak
+                break
             else:
                 imm = inttob(int(sublist[1][0:k-1]),11) 
                 if rs not in abi_mapping:
@@ -286,6 +289,7 @@ for line in f:
             sublist = list(line[1].split(','))
             rd = sublist[0]
             rs = sublist[1]
+            n=int(sublist[2])
             imm = inttob(int(sublist[2]),11)
             if n>(2**11-1) or n<-2**11:
                 j.write('imm out of range')
@@ -305,33 +309,35 @@ for line in f:
                         j.write(abi_mapping[rd])
                         j.write('0010011\n')
 
-        if line[0] == 'stliu':
+        if line[0] == 'sltiu':
             sublist = list(line[1].split(','))
             rd = sublist[0]
-            rs = line[1]
+            rs = sublist[1]
+            n=int(sublist[2])
             imm = inttob(int(sublist[2]),11)
             if n>(2**11-1) or n<-2**11:
-                j.write('imm out of range')
+                print('imm out of range')
                 break
             else:
                 if rd not in abi_mapping:
-                    j.write('register not found')
+                    print('register not found')
                     break
                 else:
                     if rs not in abi_mapping:
-                        j.write('register not found')
+                        print('register not found')
                         break
                     else:
                         j.write(imm)
-                        j.write(registers[rs])
+                        j.write(abi_mapping[rs])
                         j.write('011')
-                        j.write(registers[rd])
+                        j.write(abi_mapping[rd])
                         j.write('0010011\n')
 
         if line[0] == 'jalr':
             sublist = list(line[1].split(','))
             rd = sublist[0]
             x6 = '00110'
+            n=int(sublist[2])
             imm = inttob(int(sublist[2]),11)
             if n>(2**11-1) or n<-2**11:
                 j.write('imm out of range')
@@ -354,8 +360,8 @@ for line in f:
         rs2=sublist[0]
         sublist=list(sublist[1].split("("))
         imm=int(sublist[0])
-        rs1=sublist[1][0:-1]
-        if rs2 in abi_mapping and rs1 in abi_mapping:
+        rs1=sublist[1][0:-2]
+        if rs2 in abi_mapping and rs1 in abi_mapping:      # error if rs1 is last line
             if -2048<=imm<2048:
                 imm=inttob(imm,12)
                 rs2=abi_mapping[rs2]
@@ -375,12 +381,13 @@ for line in f:
             print('Error: rs1 or rs2 not found in abi_mapping', line_no)
             break
     # b type
-    b_type = ('beq','bne','bge','bgeu','blt','bltu')
-    if line[0] in b_type:
+    
+    elif line[0] in b_type:
         if line[0] == 'blt':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
+            n=int(sublist[2])
             imm = inttob(int(sublist[2]),12)
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
@@ -404,10 +411,11 @@ for line in f:
                         j.write('1100011\n')
             
 
-        if line[0] == 'beq':
+        elif line[0] == 'beq':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
+            n=int(sublist[2])
             imm = inttob(int(sublist[2]),12)
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
@@ -431,10 +439,11 @@ for line in f:
                             j.write('1100011\n')
                            
 
-        if line[0] == 'bne':
+        elif line[0] == 'bne':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
+            n=int(sublist[2])
             imm = inttob(int(sublist[2]),12)
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
@@ -458,10 +467,11 @@ for line in f:
                             j.write('1100011\n')
                             
                         
-        if line[0] == 'bge':
+        elif line[0] == 'bge':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
+            n=int(sublist[2])
             imm = inttob(int(sublist[2]),12)
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
@@ -485,10 +495,11 @@ for line in f:
                         j.write('1100011\n')
                       
                             
-        if line[0] == 'bltu':
+        elif line[0] == 'bltu':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
+            n=int(sublist[2])
             imm = inttob(int(sublist[2]),12)
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
@@ -512,10 +523,11 @@ for line in f:
                         j.write('1100011\n')
                        
 
-        if line[0] == 'bgeu':
+        elif line[0] == 'bgeu':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
+            n=int(sublist[2])
             imm = inttob(int(sublist[0]),12)
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
@@ -571,15 +583,17 @@ for line in f:
                 j.write('\n')
             else:
                 print('Error: imm not in range',line_no)
+                break
         else:
             print("Error: rd not found",line_no)
+            break
     else:
         print('error not found', line_no)
+        print(line)
         break
-    #j type
 
 
-    
+
 if Visual_Halt==False:
     print('Error: visual halt not found')
 # Close the files after processing
