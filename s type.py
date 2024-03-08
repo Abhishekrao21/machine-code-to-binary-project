@@ -50,7 +50,7 @@ while line != "":
     line = list(line.split(" "))
        #make sublist inside the 
    
-    s_type = ['lw', 'addi', 'sltiu', 'jalr']
+    i_type = ['lw', 'addi', 'sltiu', 'jalr']
     if line[0] in s_type:
         if line[0] == 'lw':
             sublist = list(line[1].split(','))
