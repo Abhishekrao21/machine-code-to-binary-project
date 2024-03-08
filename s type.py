@@ -51,7 +51,7 @@ while line != "":
        #make sublist inside the 
    
     i_type = ['lw', 'addi', 'sltiu', 'jalr']
-    if line[0] in s_type:
+    if line[0] in i_type:
         if line[0] == 'lw':
             sublist = list(line[1].split(','))
             rd = sublist[0] 
@@ -61,7 +61,9 @@ while line != "":
                 k+=1
                 if (i == '('):
                     break
-            rs = sublist[1][k:-1] 
+            
+            rs = sublist[1][k:k+2]
+            
             
             if int(sublist[1][0:k-1])>(2**11)-1 or int(sublist[1][0:k-1])<(-2**11):
                 j.write('imm out of range\n')
@@ -69,7 +71,8 @@ while line != "":
             else:
                 imm = inttob(int(sublist[1][0:k-1]),12) 
                 if rs not in abi_mapping:
-                    j.write("register not founds\n")
+                    j.write("register not found\n")
+                    print(rs)
                     break
                 else:
                     if rd not in abi_mapping:
@@ -153,6 +156,13 @@ while line != "":
                     j.write('010')
                     j.write(abi_mapping[rd])
                     j.write('0000011\n')
+
+
+            
+    line = f.readline()  # Corrected the function call
+
+f.close()
+j.close()
 
 
             
