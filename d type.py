@@ -35,6 +35,15 @@ while line != "":
         'x25': '11001', 'x26': '11010', 'x27': '11011', 'x28': '11100', 'x29': '11101',
         'x30': '11110', 'x31': '11111'
     }
+    abi_mapping== {
+    'zero': '00000','ra': '00001','sp': '00010','gp': '00011','tp': '00100','t0':'00101',
+    't1': '00110','t2': '00111','s0':'01000','fp':'01000','s1': '01001',
+    'a0': '01010','a1': '01011','a2': '01100','a3': '01101',
+    'a4': '01110','a5': '01111','a6': '10000','a7': '10001','s2': '10010',
+    's3': '10011','s4': '10100','s5': '10101','s6': '10110','s7': '10111',
+    's8': '11000','s9': '11001','s10': '11010','s11': '11011','t3': '11100',
+    't4': '11101','t5': '11110','t6': '11111',
+    }
     b_type = ('beq','bne','bge','bgeu','blt','bltu')
     
 
@@ -47,15 +56,26 @@ while line != "":
             rs2 = sublist[1]
             rs1 = sublist[0]
             imm = inttob(int(sublist[2]),12)
-            
-            j.write(imm[0])
-            j.write(imm[1:7])
-            j.write(registers[rs2])
-            j.write(registers[rs1])
-            j.write('100')
-            j.write(imm[7:11])
-            j.write(imm[1])
-            j.write('1100011\n')
+            if n>2**11-1 or n<-2**11:
+                j.write('imm out of range')
+                break
+            else:
+                if rs1 not in abi_mapping:
+                    j.write("register not found")
+                    break
+                else:
+                    if rs2 not in abi_mapping:
+                        j.wite("register not found")
+                        break
+                    else:
+                        j.write(imm[0])
+                        j.write(imm[1:7])
+                        j.write(abi_mapping[rs2])
+                        j.write(abi_mapping[rs1])
+                        j.write('100')
+                        j.write(imm[7:11])
+                        j.write(imm[1])
+                        j.write('1100011\n')
             
 
         if line[0] == 'beq':
@@ -63,75 +83,135 @@ while line != "":
             rs2 = sublist[1]
             rs1 = sublist[0]
             imm = inttob(int(sublist[2]),12)
-            j.write(imm[0])
-            j.write(imm[1:7])
-            j.write(registers[rs2])
-            j.write(registers[rs1])
-            j.write('000')
-            j.write(imm[7:11])
-            j.write(imm[1])
-            j.write('1100011\n')
-            print(imm[1:7])
+            if n>2**11-1 or n<-2**11:
+                j.write('imm out of range')
+                break
+            else:
+                if rs1 not in abi_mapping:
+                    j.write("register not found")
+                    break
+                else:
+                    if rs2 not in abi_mapping:
+                        j.wite("register not found")
+                        break
+                    else:
+                            j.write(imm[0])
+                            j.write(imm[1:7])
+                            j.write(abi_mapping[rs2])
+                            j.write(abi_mapping[rs1])
+                            j.write('000')
+                            j.write(imm[7:11])
+                            j.write(imm[1])
+                            j.write('1100011\n')
+                           
 
         if line[0] == 'bne':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
             imm = inttob(int(sublist[2]),12)
-            j.write(imm[0])
-            j.write(imm[1:7])
-            j.write(registers[rs2])
-            j.write(registers[rs1])
-            j.write('001')
-            j.write(imm[7:11])
-            j.write(imm[1])
-            j.write('1100011\n')
-            print(imm[1:7])
-        
+            if n>2**11-1 or n<-2**11:
+                j.write('imm out of range')
+                break
+            else:
+                if rs1 not in abi_mapping:
+                    j.write("register not found")
+                    break
+                else:
+                    if rs2 not in abi_mapping:
+                        j.wite("register not found")
+                        break
+                    else:
+                            j.write(imm[0])
+                            j.write(imm[1:7])
+                            j.write(abi_mapping[rs2])
+                            j.write(abi_mapping[rs1])
+                            j.write('001')
+                            j.write(imm[7:11])
+                            j.write(imm[1])
+                            j.write('1100011\n')
+                            
+                        
         if line[0] == 'bge':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
             imm = inttob(int(sublist[2]),12)
-            j.write(imm[0])
-            j.write(imm[1:7])
-            j.write(registers[rs2])
-            j.write(registers[rs1])
-            j.write('101')
-            j.write(imm[7:11])
-            j.write(imm[1])
-            j.write('1100011\n')
-            print(imm[1:7])
-                
+            if n>2**11-1 or n<-2**11:
+                j.write('imm out of range')
+                break
+            else:
+                if rs1 not in abi_mapping:
+                    j.write("register not found")
+                    break
+                else:
+                    if rs2 not in abi_mapping:
+                        j.wite("register not found")
+                        break
+                    else:
+                        j.write(imm[0])
+                        j.write(imm[1:7])
+                        j.write(abi_mapping[rs2])
+                        j.write(abi_mapping[rs1])
+                        j.write('101')
+                        j.write(imm[7:11])
+                        j.write(imm[1])
+                        j.write('1100011\n')
+                      
+                            
         if line[0] == 'bltu':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
             imm = inttob(int(sublist[2]),12)
-            j.write(imm[0])
-            j.write(imm[1:7])
-            j.write(registers[rs2])
-            j.write(registers[rs1])
-            j.write('110')
-            j.write(imm[7:11])
-            j.write(imm[1])
-            j.write('1100011\n')
-            print(imm[1:7])
+            if n>2**11-1 or n<-2**11:
+                j.write('imm out of range')
+                break
+            else:
+                if rs1 not in abi_mapping:
+                    j.write("register not found")
+                    break
+                else:
+                    if rs2 not in abi_mapping:
+                        j.wite("register not found")
+                        break
+                    else:
+                        j.write(imm[0])
+                        j.write(imm[1:7])
+                        j.write(abi_mapping[rs2])
+                        j.write(abi_mapping[rs1])
+                        j.write('110')
+                        j.write(imm[7:11])
+                        j.write(imm[1])
+                        j.write('1100011\n')
+                       
 
         if line[0] == 'bgeu':
             sublist = list(line[1].split(','))
             rs2 = sublist[1]
             rs1 = sublist[0]
             imm = inttob(int(sublist[0]),12)
-            j.write(imm[0])
-            j.write(imm[1:7])
-            j.write(registers[rs2])
-            j.write(registers[rs1])
-            j.write('111')
-            j.write(imm[7:11])
-            j.write(imm[1])
-            j.write('1100011\n')
-            print(imm[1:7])
+            if n>2**11-1 or n<-2**11:
+                j.write('imm out of range')
+                break
+            else:
+                if rs1 not in abi_mapping:
+                    j.write("register not found")
+                    break
+                else:
+                    if rs2 not in abi_mapping:
+                        j.wite("register not found")
+                        break
+                    else:
+                        j.write(imm[0])
+                        j.write(imm[1:7])
+                        j.write(abi_mapping[rs2])
+                        j.write(abi_mapping[rs1])
+                        j.write('111')
+                        j.write(imm[7:11])
+                        j.write(imm[1])
+                        j.write('1100011\n')
+                        
     line = f.readline()
 
 f.close()
