@@ -19,10 +19,24 @@ def inttob(n,size):
             q=q//2
             binary=str(rem)+binary
         return binary
-f = open("/Users/abhishekrao/Documents/vscode/python/read.txt", "r")
-j = open("/Users/abhishekrao/Documents/vscode/python/write.txt", "a")
+g = open("name.txt", "r")
+f = open("name.txt", "r")
+j = open("trial.txt", "a")
 line_no=0
 Visual_Halt=False
+loops = {}
+linen = 1
+for line in g:
+    line = list(line.split(" "))
+    for i in line[0]:
+        if i == ':':
+            loops[line[0][0:-1]] = linen
+            
+        else:
+            
+            pass
+    linen = linen+1
+
 for line in f:
     if Visual_Halt==True:
         print('Error: Visual Halt at line',line_no)
@@ -50,8 +64,28 @@ for line in f:
     's8': '11000','s9': '11001','s10': '11010','s11': '11011','t3': '11100',
     't4': '11101','t5': '11110','t6': '11111',
     }
-
+    
     line = list(line.split(" "))
+    
+    for i in line[0]:
+        if i == ':':
+            
+            line.remove(line[0])
+        else:
+            pass
+
+
+
+
+        
+    
+    if(line[0]==""):
+        while(line[0]==""):
+            line.remove(line[0])
+         
+    
+           
+    
 
     #r type  
     R_type = ['add', 'sub', 'sll', 'slt', 'sltu', 'xor', 'srl', 'or', 'and']
@@ -364,10 +398,19 @@ for line in f:
     elif line[0] in b_type:
         if line[0] == 'blt':
             sublist = list(line[1].split(','))
+            if sublist[2][0:-1] in loops:
+                n = 4*(line_no-loops[sublist[2][0:-1]])
+                
+                
+                
+                imm = inttob(n,12)
+            else:
+                n = int(sublist[2])
+                imm = inttob(n,12)
             rs2 = sublist[1]
             rs1 = sublist[0]
-            n=int(sublist[2])
-            imm = inttob(int(sublist[2]),12)
+            
+            
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
                 break
@@ -392,10 +435,18 @@ for line in f:
 
         elif line[0] == 'beq':
             sublist = list(line[1].split(','))
+            if sublist[2][0:-1] in loops:
+                n = 4*(line_no-loops[sublist[2][0:-1]])
+                
+                
+                
+                imm = inttob(n,12)
+            else:
+                n = int(sublist[2])
+                imm = inttob(n,12)
             rs2 = sublist[1]
             rs1 = sublist[0]
-            n=int(sublist[2])
-            imm = inttob(int(sublist[2]),12)
+            
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
                 break
@@ -420,10 +471,18 @@ for line in f:
 
         elif line[0] == 'bne':
             sublist = list(line[1].split(','))
+            if sublist[2][0:-1] in loops:
+                n = 4*(line_no-loops[sublist[2][0:-1]])
+                
+                
+                
+                imm = inttob(n,12)
+            else:
+                n = int(sublist[2])
+                imm = inttob(n,12)
             rs2 = sublist[1]
             rs1 = sublist[0]
-            n=int(sublist[2])
-            imm = inttob(int(sublist[2]),12)
+            
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
                 break
@@ -448,10 +507,18 @@ for line in f:
                         
         elif line[0] == 'bge':
             sublist = list(line[1].split(','))
+            if sublist[2][0:-1] in loops:
+                n = 4*(line_no-loops[sublist[2][0:-1]])
+                
+                
+                
+                imm = inttob(n,12)
+            else:
+                n = int(sublist[2])
+                imm = inttob(n,12)
             rs2 = sublist[1]
             rs1 = sublist[0]
-            n=int(sublist[2])
-            imm = inttob(int(sublist[2]),12)
+            
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
                 break
@@ -476,10 +543,18 @@ for line in f:
                             
         elif line[0] == 'bltu':
             sublist = list(line[1].split(','))
+            if sublist[2][0:-1] in loops:
+                n = 4*(line_no-loops[sublist[2][0:-1]])
+                
+                
+                
+                imm = inttob(n,12)
+            else:
+                n = int(sublist[2])
+                imm = inttob(n,12)
             rs2 = sublist[1]
             rs1 = sublist[0]
-            n=int(sublist[2])
-            imm = inttob(int(sublist[2]),12)
+           
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
                 break
@@ -504,10 +579,18 @@ for line in f:
 
         elif line[0] == 'begeu':
             sublist = list(line[1].split(','))
+            if sublist[2][0:-1] in loops:
+                n = 4*(line_no-loops[sublist[2][0:-1]])
+                
+                
+                
+                imm = inttob(n,12)
+            else:
+                n = int(sublist[2])
+                imm = inttob(n,12)
             rs2 = sublist[1]
             rs1 = sublist[1]
-            n=int(sublist[2])
-            imm = inttob(int(sublist[2]),12)
+            
             if n>2**11-1 or n<-2**11:
                 j.write('imm out of range')
                 break
