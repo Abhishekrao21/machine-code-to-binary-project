@@ -75,7 +75,7 @@ for line in f:
     if(line[0]==""):
         while(line[0]==""):
             line.remove(line[0])
-    print(line)       
+    
     if line ==['beq', 'zero,zero,0']:
         Visual_Halt=True
 
