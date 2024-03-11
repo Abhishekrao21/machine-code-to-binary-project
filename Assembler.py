@@ -391,10 +391,10 @@ for line in f:
         if line[0] == 'blt':
             sublist = list(line[1].split(','))
             if sublist[2][0:-1] in loops:
-                n = 4*(line_no-loops[sublist[2][0:-1]])
-                
-                
-                
+                n = 4*(loops[sublist[2][0:-1]]-line_no)
+                imm = inttob(n,12)
+            elif sublist[2] in loops:
+                n = 4*(loops[sublist[2]]-line_no)
                 imm = inttob(n,12)
             else:
                 n = int(sublist[2])
@@ -428,10 +428,10 @@ for line in f:
         elif line[0] == 'beq':
             sublist = list(line[1].split(','))
             if sublist[2][0:-1] in loops:
-                n = 4*(line_no-loops[sublist[2][0:-1]])
-                
-                
-                
+                n = 4*(loops[sublist[2][0:-1]]-line_no)
+                imm = inttob(n,12)
+            elif sublist[2] in loops:
+                n = 4*(loops[sublist[2]]-line_no)
                 imm = inttob(n,12)
             else:
                 n = int(sublist[2])
@@ -464,10 +464,10 @@ for line in f:
         elif line[0] == 'bne':
             sublist = list(line[1].split(','))
             if sublist[2][0:-1] in loops:
-                n = 4*(line_no-loops[sublist[2][0:-1]])
-                
-                
-                
+                n = 4*(loops[sublist[2][0:-1]]-line_no)
+                imm = inttob(n,12)
+            elif sublist[2] in loops:
+                n = 4*(loops[sublist[2]]-line_no)
                 imm = inttob(n,12)
             else:
                 n = int(sublist[2])
@@ -500,10 +500,10 @@ for line in f:
         elif line[0] == 'bge':
             sublist = list(line[1].split(','))
             if sublist[2][0:-1] in loops:
-                n = 4*(line_no-loops[sublist[2][0:-1]])
-                
-                
-                
+                n = 4*(loops[sublist[2][0:-1]]-line_no)
+                imm = inttob(n,12)
+            elif sublist[2] in loops:
+                n = 4*(loops[sublist[2]]-line_no)
                 imm = inttob(n,12)
             else:
                 n = int(sublist[2])
@@ -536,10 +536,10 @@ for line in f:
         elif line[0] == 'bltu':
             sublist = list(line[1].split(','))
             if sublist[2][0:-1] in loops:
-                n = 4*(line_no-loops[sublist[2][0:-1]])
-                
-                
-                
+                n = 4*(loops[sublist[2][0:-1]]-line_no)
+                imm = inttob(n,12)
+            elif sublist[2] in loops:
+                n = 4*(loops[sublist[2]]-line_no)
                 imm = inttob(n,12)
             else:
                 n = int(sublist[2])
@@ -572,10 +572,10 @@ for line in f:
         elif line[0] == 'begeu':
             sublist = list(line[1].split(','))
             if sublist[2][0:-1] in loops:
-                n = 4*(line_no-loops[sublist[2][0:-1]])
-                
-                
-                
+                n = 4*(loops[sublist[2][0:-1]]-line_no)
+                imm = inttob(n,12)
+            elif sublist[2] in loops:
+                n = 4*(loops[sublist[2]]-line_no)
                 imm = inttob(n,12)
             else:
                 n = int(sublist[2])
