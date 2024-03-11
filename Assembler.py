@@ -339,6 +339,11 @@ for line in f:
             sublist = list(line[1].split(','))
             n = sublist[2]
             rd = sublist[0]
+            rs1 = sublist[1]
+            if rs1 in abi_mapping:
+                rs1=abi_mapping[rs1]
+            elif rs1 in registers:
+                rs1=registers[rs1]
             x6 = '00110'
             imm = inttob(int(sublist[2]),12)
             
@@ -352,10 +357,10 @@ for line in f:
                     break
                 else:
                     j.write(imm)
-                    j.write(x6)
-                    j.write('010')
+                    j.write(rs1)
+                    j.write('000')
                     j.write(abi_mapping[rd])
-                    j.write('0000011\n')
+                    j.write('1100111\n')
 
 
     #S-type   
@@ -676,9 +681,6 @@ for line in f:
         print('error not found', line_no)
         print(line)
         break
-
-
-
 if Visual_Halt==False:
     print('Error: visual halt not found')
 f.close()
