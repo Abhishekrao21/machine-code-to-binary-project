@@ -18,38 +18,38 @@ memory = {
 }
 
 dict_registers = {
-    '00000': '0000000000000000000000000000000',
-    '00001': '0000000000000000000000000000000',
-    '00010': '0000000000000000000000000000000',
-    '00011': '0000000000000000000000000000000',
-    '00100': '0000000000000000000000000000000',
-    '00101': '0000000000000000000000000000000',
-    '00110': '0000000000000000000000000000000',
-    '00111': '0000000000000000000000000000000',
-    '01000': '0000000000000000000000000000000',
-    '01001': '0000000000000000000000000000000',
-    '01010': '0000000000000000000000000000000',
-    '01011': '0000000000000000000000000000000',
-    '01100': '0000000000000000000000000000000',
-    '01101': '0000000000000000000000000000000',
-    '01110': '0000000000000000000000000000000',
-    '01111': '0000000000000000000000000000000',
-    '10000': '0000000000000000000000000000000',
-    '10001': '0000000000000000000000000000000',
-    '10010': '0000000000000000000000000000000',
-    '10011': '0000000000000000000000000000000',
-    '10100': '0000000000000000000000000000000',
-    '10101': '0000000000000000000000000000000',
-    '10110': '0000000000000000000000000000000',
-    '10111': '0000000000000000000000000000000',
-    '11000': '0000000000000000000000000000000',
-    '11001': '0000000000000000000000000000000',
-    '11010': '0000000000000000000000000000000',
-    '11011': '0000000000000000000000000000000',
-    '11100': '0000000000000000000000000000000',
-    '11101': '0000000000000000000000000000000',
-    '11110': '0000000000000000000000000000000',
-    '11111': '0000000000000000000000000000000'
+    '00000': '00000000000000000000000000000000',
+    '00001': '00000000000000000000000000000000',
+    '00010': '00000000000000000000000100000000',
+    '00011': '00000000000000000000000000000000',
+    '00100': '00000000000000000000000000000000',
+    '00101': '00000000000000000000000000000000',
+    '00110': '00000000000000000000000000000000',
+    '00111': '00000000000000000000000000000000',
+    '01000': '00000000000000000000000000000000',
+    '01001': '00000000000000000000000000000000',
+    '01010': '00000000000000000000000000000000',
+    '01011': '00000000000000000000000000000000',
+    '01100': '00000000000000000000000000000000',
+    '01101': '00000000000000000000000000000000',
+    '01110': '00000000000000000000000000000000',
+    '01111': '00000000000000000000000000000000',
+    '10000': '00000000000000000000000000000000',
+    '10001': '00000000000000000000000000000000',
+    '10010': '00000000000000000000000000000000',
+    '10011': '00000000000000000000000000000000',
+    '10100': '00000000000000000000000000000000',
+    '10101': '00000000000000000000000000000000',
+    '10110': '00000000000000000000000000000000',
+    '10111': '00000000000000000000000000000000',
+    '11000': '00000000000000000000000000000000',
+    '11001': '00000000000000000000000000000000',
+    '11010': '00000000000000000000000000000000',
+    '11011': '00000000000000000000000000000000',
+    '11100': '00000000000000000000000000000000',
+    '11101': '00000000000000000000000000000000',
+    '11110': '00000000000000000000000000000000',
+    '11111': '00000000000000000000000000000000'
 }
 
 abi_mapping = {
@@ -135,12 +135,12 @@ def U_type(instruction, i, dict_registers):
     imm = instruction[:20] + '000000000000'
     rd = instruction[20:25]
 
-    if opcode == '0110111':  # lui
+    if opcode == '0110111':  
         i += 4
         result = Convert_2scomplement(imm)
         dict_registers[rd] = decimal_to_binary(result)
 
-    elif opcode == '0010111':  # auipc
+    elif opcode == '0010111':  
         i += 4
         result = i + Convert_2scomplement(imm)
         dict_registers[rd] = decimal_to_binary(result)
@@ -157,24 +157,26 @@ def J_type(instruction, i,dict_registers):
 
 def I_type(line,i,dict_registers,memory):
   if(line[25:32]=="0000011"):
-    rs1 = line[12:17]
+    rs1 = dict_registers[line[12:17]]
     rd = line[20:25]
     imm = line[0:12]
-
+    print(rs1)
+    print(rd)
+    extend_signed_to_32_bits(imm)
     val = binary_addition(rs1, imm)
     address = binary_to_hex(val)
-    memory[address] = rd
+    dict_registers[rd] = memory[address]
 
 
   elif(line[25:32]=="0010011"):
     if(line[17:20]=="000"):
-      rs1 = line[12:17]
+      rs1 = dict_registers[line[12:17]]
       rd = line[20:25]
       imm = line[0:12]
       val = binary_addition(rs1, imm)
       dict_registers[rd] = val
     else:
-      rs1 = line[12:17]
+      rs1 = dict_registers[line[12:17]]
       rd = line[20:25]
       rs1 = binary_to_integer(rs1)
       imm = line[0:12]
@@ -184,7 +186,7 @@ def I_type(line,i,dict_registers,memory):
         dict_registers[rd]= val
 
   elif(line[25:32]=="1100111"):
-    rs1 = line[12:17]
+    rs1 = dict_registers[line[12:17]]
     rd = line[20:25]
     imm = line[0:12]
     
@@ -199,12 +201,13 @@ def I_type(line,i,dict_registers,memory):
   return i,dict_registers,memory
 
 def R_type(ins, dict_registers):
-    rs1 = ins[12:17]
-    rs2 = ins[7:12]
+    rs2 = dict_registers[line[7:12]]
+    rs1 = dict_registers[line[12:17]]
     rd = ins[20:25]
 
+
     if ins[0:7] == "0100000":
-        if rs1 == '00000':
+        if rs1 == '00000'.zfill(32):
             dict_registers[rd] = Convert_2scomplement(rs2)
             return dict_registers
         dict_registers[rd] = binary_subtraction(rs1, rs2)
@@ -215,7 +218,7 @@ def R_type(ins, dict_registers):
         return dict_registers
     
     elif ins[17:20] == "001":
-        shift_amount = int(rs2[-5:], 2)  # Convert the lower 5 bits of rs2 to an integer
+        shift_amount = int(rs2[-5:], 2)  
         shifted_rs1 = rs1[shift_amount:] + '0' * shift_amount
         dict_registers[rd]=shifted_rs1
         return dict_registers
@@ -233,7 +236,7 @@ def R_type(ins, dict_registers):
     elif ins[17:20] == "100":
         a = rs1
         b = rs2
-        dict_registers[rd] = ''.join('1' if a[j] != b[j] else '0' for j in range(min(len(a), len(b))))
+        dict_registers[rd] = (''.join('1' if a[j] != b[j] else '0' for j in range(min(len(a), len(b)))))
         return dict_registers
 
     elif ins[17:20] == "101":
@@ -243,27 +246,22 @@ def R_type(ins, dict_registers):
         return dict_registers
     
     elif ins[17:20] == "110":
-        dict_registers[rd] = ''.join('1' if rs1[j] == '1' or rs2[j] == '1' else '0' for j in range(min(len(rs1), len(rs2))))
+        dict_registers[rd] = (''.join('1' if rs1[j] == '1' or rs2[j] == '1' else '0' for j in range(min(len(rs1), len(rs2)))))
         return dict_registers
     
     elif ins[17:20] == "111":
-        dict_registers[rd] = ''.join('1' if rs1[j] == rs2[j] == '1' else '0' for j in range(min(len(rs1), len(rs2))))
+        dict_registers[rd] = (''.join('1' if rs1[j] == rs2[j] == '1' else '0' for j in range(min(len(rs1), len(rs2)))))
         return dict_registers
 
     
-def S_type(line):
-    # print(line)
+def S_type(line,memory):
     rs2 = dict_registers[line[7:12]]
     rs1 = dict_registers[line[12:17]]
     imm = str(line[0:7]) + str(line[20:25]) 
-    # print(imm,rs1)
     val = binary_addition(rs1, imm)
-    # print(val)
     address=binary_to_hex(val)
-    # print(address)
     memory[address]=rs2
-    # print(memory)
-    return 
+    return  memory
 
 def B_type(line,i,dict_registers):
     if(line[17:20]=="000"):
@@ -345,6 +343,7 @@ def B_type(line,i,dict_registers):
         k = binary_addition(k,imm)
         k = binary_to_integer(k)
         i = k
+
     elif(line[17:20]=="110"):
       imm=str(line[0:7]+line[20:25])
       rs2 = dict_registers[line[7:12]]
@@ -389,7 +388,7 @@ U_opcode = {'0110111':'lui', '0010111':'auipc'}
 I_opcode = {'0000011':'lw', '0010011':'addi', '0010011':'sltiu', '1100111':'jalr'}
 
 f = open("/Users/abhishekrao/Documents/vscode/python/read.txt", "r")
-g = open("/Users/abhishekrao/Documents/vscode/python/read.txt", "a")
+g = open("/Users/abhishekrao/Documents/vscode/python/write.txt","a")
 inputs=[]
 for line in f:
     inputs.append(line)
@@ -401,25 +400,42 @@ for i in range(len(inputs)-1):
 for i in range(len(inputs)):
     flag=False
     line=inputs[i]
+    if line == "00000000000000000000000001100011":
+        # pc=i-1
+        decimal_to_binary(i*4)
+        g.write(pc)
+        g.write(" ")
+        for r in dict_registers:
+            g.write(dict_registers[r])
+            g.write(" ")
+        g.write("\n")
+        break
     if line[25:32]==J_opcode:
         flag=True
         J_type(line,i,dict_registers)
-    elif line[25:32]==U_opcode:
+    elif line[25:32] in U_opcode:
         flag=True
         U_type(line,i,dict_registers)
-    if line[25:32]==S_opcode:
+    elif line[25:32]==S_opcode:
         flag=True
-        S_type(line)
-    elif line[25:32]==I_opcode:
+        S_type(line,memory)
+    elif line[25:32] in I_opcode:
         flag=True
-        I_type(line,i,dict_registers)
+        I_type(line,i,dict_registers,memory)
     elif line[25:32]==R_opcode:
         flag=True
         R_type(line,dict_registers)
     elif line[25:32]==B_opcode:
         flag=True
         B_type(line,i,dict_registers)
-       
+    pc=decimal_to_binary((i+1)*4)
+    g.write(pc)
+    g.write(" ")
+    for r in dict_registers:
+       g.write(dict_registers[r])
+       g.write(" ")
+    g.write("\n")
+
 
 for key, value in dict_registers.items():
     print(key, value)
